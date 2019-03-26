@@ -31,8 +31,24 @@ describe('\'Bills\' service', () => {
   it('creates bill', (done) => {
     app.service('bills').create({name: 'Bill number 1'})
       .then(bill => {
-        assert.ok(bill);
         assert.equal(bill.name, 'Bill number 1');
+      }).then(done).catch(done);
+  });
+
+  it('no deleting bill', (done) => {
+    app.service('bills').create({name: 'Bill number 1'})
+      .then(() => {
+        return app.service('bills').find();
+      }).then((results) => {
+        assert.equal(results.data.length, 1);
+      }).then(() => {
+        return assert.rejects(() => {
+          return app.service('bills').remove(0);
+        });
+      }).then(() => {
+        return app.service('bills').find();
+      }).then((results) => {
+        assert.equal(results.data.length, 1);
       }).then(done).catch(done);
   });
   

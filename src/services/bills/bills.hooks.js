@@ -8,7 +8,9 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: []
+    remove: [() => {
+      return Promise.reject(new Error('Cannot delete bills'));
+    }]
   },
 
   after: {
