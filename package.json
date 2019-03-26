@@ -1,0 +1,54 @@
+{
+  "name": "democracy-box",
+  "description": "",
+  "version": "0.0.0",
+  "homepage": "",
+  "main": "src",
+  "keywords": [
+    "feathers"
+  ],
+  "author": {
+    "name": "Djane Rey Mabelin",
+    "email": "d.mabelin@arcanys.com"
+  },
+  "contributors": [],
+  "bugs": {},
+  "directories": {
+    "lib": "src",
+    "test": "test/"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "scripts": {
+    "test": "npm run eslint && npm run mocha",
+    "eslint": "eslint src/. test/. --config .eslintrc.json",
+    "start": "node src/",
+    "mocha": "mocha test/ --recursive --exit"
+  },
+  "dependencies": {
+    "body-parser": "~1.18.3",
+    "compression": "~1.7.3",
+    "cors": "~2.8.5",
+    "feathers": "~2.2.4",
+    "feathers-configuration": "~0.4.2",
+    "feathers-errors": "~2.9.2",
+    "feathers-hooks": "~2.1.2",
+    "feathers-hooks-common": "~4.20.7",
+    "feathers-mongodb": "~4.0.4",
+    "feathers-rest": "~1.8.1",
+    "feathers-socketio": "~2.0.1",
+    "helmet": "~3.16.0",
+    "mongodb": "~3.1.13",
+    "serve-favicon": "~2.5.0",
+    "winston": "~3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "~5.5.0",
+    "feathers-memory": "~3.0.2",
+    "mocha": "~6.0.2",
+    "request": "~2.88.0",
+    "request-promise": "~4.2.4"
+  }
+}
