@@ -1,3 +1,4 @@
+/* esline-disable no-console */
 const assert = require('assert');
 const app = require('../../src/app');
 const rp = require('request-promise');
@@ -48,4 +49,66 @@ describe('\'Bills\' service', () => {
       });
     }).then(done).catch(done);
   });
+
+  it('root and parent fields', (done) => {
+    let firstId, secondId;
+    // create first bill
+    rp({
+      url: `http://${host}:${port}/bills`,
+      method: 'POST',
+      body: {
+        name: 'Bill Name',
+        description: 'Some description',
+        author: 'mrtest'
+      },
+      json: true
+    }).then(body => {
+      firstId=body._id;
+    }).then(() => {
+      //create second bill
+      return rp({
+        url: `http://${host}:${port}/bills`,
+        method: 'POST',
+        body: {
+          name: 'Bill Name 2',
+          description: 'Some description',
+          author: 'mrtest',
+          parent: firstId
+        },
+        json: true
+      });
+    }).then( (body) => {
+      secondId = body._id;
+      assert(body.parent, firstId);
+      assert(body.root, firstId);
+    }).then(() =>{
+      // create third bill
+      return rp({
+        url: `http://${host}:${port}/bills`,
+        method: 'POST',
+        body: {
+          name: 'Bill Name 3',
+          description: 'Some description',
+          author: 'mrtest',
+          parent: secondId
+        },
+        json: true
+      }).then((body) => {
+        // root should be the id of the first 
+        // parent should be the id of the second
+        assert(body.parent, secondId);
+        assert(body.root, firstId);
+      });
+    }).then(() => {
+      return rp({
+        url: `http://${host}:${port}/bills`,
+        json: true
+      }).then((body) => {
+        console.log(body);
+      });
+    })
+    
+    .then(done).catch(done);
+  });
+
 });

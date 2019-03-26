@@ -8,7 +8,9 @@ module.exports = function (app) {
   const bills = new Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
-    author: { type: String, required: true }
+    author: { type: String, required: true },
+    parent: { type: Schema.Types.ObjectId, required: false },
+    root: { type: Schema.Types.ObjectId, required: false }
   }, {
     timestamps: true
   });

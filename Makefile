@@ -1,4 +1,4 @@
-.PHONY: clean image update install test shell
+.PHONY: clean image update install test shell lint mocha test
 
 NODE_IMAGE=node:8.15.1-alpine
 
@@ -19,8 +19,15 @@ clean:
 image: install
 	docker-compose build
 
-test:
-	docker-compose run -e NODE_ENV=testing app npm test
+lint:
+	docker-compose run -e NODE_ENV=testing app npm run eslint
+
+mocha:
+	docker-compose run -e NODE_ENV=testing app npm run mocha
 	docker-compose down
+
+
+test: lint mocha
+
 shell:
 	docker run --rm -ti -v $(PWD):/app -w /app $(NODE_IMAGE) sh
