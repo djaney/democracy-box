@@ -6,8 +6,5 @@
     "default": 10,
     "max": 50
   },
-  "mongodb": {
-    "url": "mongodb://mongo:27017/",
-    "db": "democracy_box"
-  }
+  "mongodb": "mongodb://mongo:27017/democracy_box"
 }
