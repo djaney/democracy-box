@@ -1,4 +1,4 @@
-
+const common = require('feathers-hooks-common');
 
 module.exports = {
   before: {
@@ -8,9 +8,7 @@ module.exports = {
     create: [],
     update: [],
     patch: [],
-    remove: [() => {
-      return Promise.reject(new Error('Cannot delete bills'));
-    }]
+    remove: [common.disallow()]
   },
 
   after: {
