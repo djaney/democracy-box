@@ -20,5 +20,5 @@ module.exports = function () {
   // Get our initialized service so that we can register hooks and filters
   const service = app.service('bills');
 
-  service.hooks(hooks(app));
+  service.hooks(hooks);
 };
