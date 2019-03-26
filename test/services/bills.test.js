@@ -8,9 +8,12 @@ describe('\'Bills\' service', () => {
   before(function(done){
     this.server = app.listen(3030);
     this.server.once('listening', () => {
-      const mongoose = app.get('mongooseClient');
-      mongoose.connection.dropDatabase(done);
+      app.get('mongooseClient').connection.dropDatabase(done);
     });
+  });
+
+  beforeEach(function(done){
+    app.get('mongooseClient').connection.dropDatabase(done);
   });
   
   after(function (done) {
