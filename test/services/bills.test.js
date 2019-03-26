@@ -54,18 +54,19 @@ describe('\'Bills\' service', () => {
       }).then(done).catch(done);
   });
 
-  it('accept name, description only', (done) => {
+  it('accept name, description, author', (done) => {
     const Model = createModel(app);
-    const validModel = new Model({name: 'Anti-smoking bill', description: 'Nobody is allowed to smoke'});
+    const validModel = new Model({
+      name: 'Anti-smoking bill',
+      description: 'Nobody is allowed to smoke',
+      author:'Jose Rizal'
+    });
+
     validModel.validate();
+
     assert.equal(validModel.name, 'Anti-smoking bill');
     assert.equal(validModel.description, 'Nobody is allowed to smoke');
-
-    const modelWithExtraFields = new Model({name: 'Anti-smoking bill', description: 'Nobody is allowed to smoke', nothing: 'This is extra'});
-    modelWithExtraFields.validate();
-    assert.equal(modelWithExtraFields.name, 'Anti-smoking bill');
-    assert.equal(modelWithExtraFields.description, 'Nobody is allowed to smoke');
-    assert.equal(modelWithExtraFields.nothing, undefined);
+    assert.equal(validModel.author, 'Jose Rizal');
 
     done();
   });
