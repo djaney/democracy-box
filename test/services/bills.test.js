@@ -99,16 +99,7 @@ describe('\'Bills\' service', () => {
         assert(body.parent, secondId);
         assert(body.root, firstId);
       });
-    }).then(() => {
-      return rp({
-        url: `http://${host}:${port}/bills`,
-        json: true
-      }).then((body) => {
-        console.log(body);
-      });
-    })
-    
-    .then(done).catch(done);
+    }).then(done).catch(done);
   });
 
 });
