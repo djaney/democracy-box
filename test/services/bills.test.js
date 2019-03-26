@@ -1,28 +1,20 @@
-const feathers = require('feathers');
 const assert = require('assert');
-
-const memory = require('feathers-memory');
-const hooks = require('../../src/services/bills/bills.hooks');
-const createModel = require('../../src/models/bills.model');
-
-
+const app = require('../../src/app');
+const rp = require('request-promise');
+const host = app.get('host');
+const port = app.get('port');
 
 describe('\'Bills\' service', () => {
-  let app;
-  beforeEach(() => {
-
-    // setup service
-    app = feathers();
-    app.configure(require('feathers-hooks')());
-    app.use('/bills', memory({
-      paginate: {
-        default: 10,
-        max: 50
-      }
-    }));
-
-    app.service('bills').hooks(hooks);
-    app.set('mongooseClient', require('mongoose'));
+  before(function(done){
+    this.server = app.listen(3030);
+    this.server.once('listening', () => {
+      const mongoose = app.get('mongooseClient');
+      mongoose.connection.dropDatabase(done);
+    });
+  });
+  
+  after(function (done) {
+    this.server.close(done);
   });
 
   it('registered the service', () => {
@@ -30,45 +22,27 @@ describe('\'Bills\' service', () => {
     assert.ok(service, 'Registered the service');
   });
 
-  it('creates bill', (done) => {
-    app.service('bills').create({name: 'Bill number 1'})
-      .then(bill => {
-        assert.equal(bill.name, 'Bill number 1');
-      }).then(done).catch(done);
+  it('validations', (done) => {
+    rp({
+      url: `http://${host}:${port}/bills`,
+      method: 'POST',
+      body: {
+        name: 'Bill Name',
+        description: 'Some description',
+        author: 'mrtest'
+      },
+      json: true
+    }).then(body => {
+      assert.equal('Bill Name', body.name);
+      assert.equal('Some description', body.description);
+      assert.equal('mrtest', body.author);
+    }).then(() => {
+      return rp({
+        url: `http://${host}:${port}/bills`,
+        json: true
+      }).then((body) => {
+        assert(body.data.length, 1);
+      });
+    }).then(done).catch(done);
   });
-
-  it('no deleting bill', (done) => {
-    app.service('bills').create({name: 'Bill number 1'})
-      .then(() => {
-        return app.service('bills').find();
-      }).then((results) => {
-        assert.equal(results.data.length, 1);
-      }).then(() => {
-        return assert.rejects(() => {
-          return app.service('bills').remove(0);
-        });
-      }).then(() => {
-        return app.service('bills').find();
-      }).then((results) => {
-        assert.equal(results.data.length, 1);
-      }).then(done).catch(done);
-  });
-
-  it('accept name, description, author', (done) => {
-    const Model = createModel(app);
-    const validModel = new Model({
-      name: 'Anti-smoking bill',
-      description: 'Nobody is allowed to smoke',
-      author:'Jose Rizal'
-    });
-
-    validModel.validate();
-
-    assert.equal(validModel.name, 'Anti-smoking bill');
-    assert.equal(validModel.description, 'Nobody is allowed to smoke');
-    assert.equal(validModel.author, 'Jose Rizal');
-
-    done();
-  });
-  
 });

@@ -20,7 +20,7 @@ image: install
 	docker-compose build
 
 test:
-	docker run --rm -ti -v $(PWD):/app -w /app $(NODE_IMAGE) npm test
-
+	docker-compose run -e NODE_ENV=testing app npm test
+	docker-compose down
 shell:
 	docker run --rm -ti -v $(PWD):/app -w /app $(NODE_IMAGE) sh
