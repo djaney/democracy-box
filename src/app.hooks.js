@@ -1,5 +1,6 @@
 // Application hooks that run for every service
 const logger = require('./hooks/logger');
+const errors = require('./hooks/errors');
 
 module.exports = {
   before: {
@@ -23,7 +24,7 @@ module.exports = {
   },
 
   error: {
-    all: [ logger() ],
+    all: [ logger(), errors ],
     find: [],
     get: [],
     create: [],

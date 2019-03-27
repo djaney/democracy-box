@@ -26,7 +26,7 @@ describe('\'Bills\' service', () => {
     assert.ok(service, 'Registered the service');
   });
 
-  it('validations', (done) => {
+  it('accept name, description, author fields', (done) => {
     rp({
       url: `http://${host}:${port}/bills`,
       method: 'POST',
@@ -50,7 +50,7 @@ describe('\'Bills\' service', () => {
     }).then(done).catch(done);
   });
 
-  it('root and parent fields', (done) => {
+  it('root field should always be the same among generations', (done) => {
     let firstId, secondId;
     // create first bill
     rp({

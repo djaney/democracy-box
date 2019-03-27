@@ -1,23 +1,22 @@
-.PHONY: clean image update install test shell lint mocha test
+.PHONY: image update install test shell lint mocha test own
 
 NODE_IMAGE=node:8.15.1-alpine
+
+image: install
+	docker-compose build
 
 update:
 	sudo rm -rf node_modules
 	docker run --rm -ti -v $(PWD):/app -w /app $(NODE_IMAGE) npm update
-	sudo chown $$(stat -c %u:%g .) node_modules
-	sudo chown $$(stat -c %u:%g .) package-lock.json
+	$(MAKE) own
 
 install:
 	sudo rm -rf node_modules
 	docker run --rm -ti -v $(PWD):/app -w /app $(NODE_IMAGE) npm install
-	sudo chown $$(stat -c %u:%g .) node_modules
-clean:
-	sudo rm -rf node_modules
-	sudo rm -rf package-lock.json
+	$(MAKE) own
 
-image: install
-	docker-compose build
+own:
+	sudo chown -R $$(stat -c %u:%g .) .
 
 lint:
 	docker-compose run -e NODE_ENV=testing app npm run eslint
@@ -30,4 +29,5 @@ mocha:
 test: lint mocha
 
 shell:
-	docker run --rm -ti -v $(PWD):/app -w /app $(NODE_IMAGE) sh
+	docker-compose run --entrypoint sh app
+	$(MAKE) own
